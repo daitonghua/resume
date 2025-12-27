@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resume</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", "Microsoft YaHei", "Arial", sans-serif;
+    }
+    body {
+      background: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 语言切换按钮 */
+    .lang-switcher {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+      display: flex;
+      gap: 8px;
+    }
+    .lang-btn {
+      padding: 4px 10px;
+      font-size: 12px;
+      background: #e0e0e0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-btn.active {
+      background: #3498db;
+      color: white;
+    }
+
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 50px 30px 30px;
+      text-align: center;
+      position: relative;
+    }
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid #3498db;
+      background: #ddd;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      color: #777;
+    }
+    h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    .title {
+      color: #3498db;
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .contact-info {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .section {
+      padding: 25px 30px;
+      border-bottom: 1px solid #eee;
+    }
+    .section:last-child {
+      border-bottom: none;
+    }
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #3498db;
+      font-size: 24px;
+    }
+
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .skill-tag {
+      background: #e1f0fa;
+      color: #2980b9;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+
+    .experience-item, .education-item {
+      margin-bottom: 20px;
+    }
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .job-title, .degree {
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .company, .school {
+      color: #3498db;
+      margin: 4px 0;
+    }
+    .date {
+      color: #7f8c8d;
+      font-style: italic;
+      white-space: nowrap;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: #7f8c8d;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .item-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .date {
+        margin-top: 4px;
+      }
+      .lang-switcher {
+        top: 10px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 语言切换 -->
+    <div class="lang-switcher" id="langSwitcher">
+      <button class="lang-btn active" data-lang="zh">中文</button>
+      <button class="lang-btn" data-lang="en">English</button>
+      <button class="lang-btn" data-lang="ru">Русский</button>
+    </div>
+
+    <header>
+      <div class="avatar">👤</div>
+      <h1 id="name"></h1>
+      <div class="title" id="title"></div>
+      <div class="contact-info" id="contactInfo"></div>
+    </header>
+
+    <div class="section">
+      <h2 id="skillsTitle"></h2>
+      <div class="skills" id="skillsList"></div>
+    </div>
+
+    <div class="section">
+      <h2 id="experienceTitle"></h2>
+      <div id="experienceList"></div>
+    </div>
+
+    <div class="section">
+      <h2 id="educationTitle"></h2>
+      <div id="educationList"></div>
+    </div>
+
+    <div class="footer" id="footerText"></div>
+  </div>
+
+  <script>
+    // ======================
+    // 内容数据（集中管理）
+    // ======================
+    const resumeData = {
+      zh: {
+        name: "张三",
+        title: "高级前端工程师",
+        contact: ["📱 138-1234-5678", "✉️ zhangsan@example.com", "📍 北京市", "🔗 github.com/zhangsan"],
+        skillsTitle: "专业技能",
+        skills: ["HTML5 / CSS3", "JavaScript (ES6+)", "TypeScript", "React / Vue", "Node.js", "Webpack / Vite", "Git", "UI/UX 设计"],
+        experienceTitle: "工作经历",
+        experience: [
+          {
+            title: "高级前端工程师",
+            company: "阿里巴巴集团",
+            date: "2021.06 – 至今",
+            duties: [
+              "主导电商平台核心模块重构，性能提升 40%",
+              "搭建微前端架构，支持多团队并行开发",
+              "推动 TypeScript 全面落地，降低线上 Bug 率 30%"
+            ]
+          },
+          {
+            title: "前端开发工程师",
+            company: "腾讯科技",
+            date: "2019.03 – 2021.05",
+            duties: [
+              "负责微信小程序核心功能开发",
+              "优化首屏加载速度，从 3s 降至 1.2s",
+              "编写组件库，被 10+ 项目复用"
+            ]
+          }
+        ],
+        educationTitle: "教育背景",
+        education: [
+          {
+            degree: "计算机科学与技术 | 硕士",
+            school: "清华大学",
+            date: "2016 – 2019"
+          },
+          {
+            degree: "软件工程 | 学士",
+            school: "北京航空航天大学",
+            date: "2012 – 2016"
+          }
+        ],
+        footer: "更新于 2025 年 12 月"
+      },
+      en: {
+        name: "Zhang San",
+        title: "Senior Frontend Engineer",
+        contact: ["📱 +86 138-1234-5678", "✉️ zhangsan@example.com", "📍 Beijing, China", "🔗 github.com/zhangsan"],
+        skillsTitle: "Technical Skills",
+        skills: ["HTML5 / CSS3", "JavaScript (ES6+)", "TypeScript", "React / Vue", "Node.js", "Webpack / Vite", "Git", "UI/UX Design"],
+        experienceTitle: "Work Experience",
+        experience: [
+          {
+            title: "Senior Frontend Engineer",
+            company: "Alibaba Group",
+            date: "Jun 2021 – Present",
+            duties: [
+              "Led core module refactoring of e-commerce platform, improving performance by 40%",
+              "Built micro-frontend architecture for multi-team collaboration",
+              "Drove full TypeScript adoption, reducing production bugs by 30%"
+            ]
+          },
+          {
+            title: "Frontend Engineer",
+            company: "Tencent",
+            date: "Mar 2019 – May 2021",
+            duties: [
+              "Developed core features for WeChat Mini Programs",
+              "Optimized FCP from 3s to 1.2s",
+              "Created a reusable component library adopted by 10+ projects"
+            ]
+          }
+        ],
+        educationTitle: "Education",
+        education: [
+          {
+            degree: "M.S. in Computer Science",
+            school: "Tsinghua University",
+            date: "2016 – 2019"
+          },
+          {
+            degree: "B.E. in Software Engineering",
+            school: "Beihang University",
+            date: "2012 – 2016"
+          }
+        ],
+        footer: "Updated Dec 2025"
+      },
+      ru: {
+        name: "Чжан Сань",
+        title: "Старший инженер фронтенда",
+        contact: ["📱 +86 138-1234-5678", "✉️ zhangsan@example.com", "📍 Пекин, Китай", "🔗 github.com/zhangsan"],
+        skillsTitle: "Профессиональные навыки",
+        skills: ["HTML5 / CSS3", "JavaScript (ES6+)", "TypeScript", "React / Vue", "Node.js", "Webpack / Vite", "Git", "UI/UX дизайн"],
+        experienceTitle: "Опыт работы",
+        experience: [
+          {
+            title: "Старший инженер фронтенда",
+            company: "Alibaba Group",
+            date: "Июнь 2021 – Настоящее время",
+            duties: [
+              "Руководил рефакторингом ключевых модулей платформы, улучшив производительность на 40%",
+              "Разработал архитектуру микрофронтенда для совместной работы команд",
+              "Внедрил полный переход на TypeScript, сократив количество багов в продакшене на 30%"
+            ]
+          },
+          {
+            title: "Инженер фронтенда",
+            company: "Tencent",
+            date: "Март 2019 – Май 2021",
+            duties: [
+              "Разрабатывал ключевые функции для мини-программ WeChat",
+              "Оптимизировал время загрузки первой страницы с 3с до 1.2с",
+              "Создал библиотеку компонентов, используемую в 10+ проектах"
+            ]
+          }
+        ],
+        educationTitle: "Образование",
+        education: [
+          {
+            degree: "Магистр компьютерных наук",
+            school: "Университет Цинхуа",
+            date: "2016 – 2019"
+          },
+          {
+            degree: "Бакалавр программной инженерии",
+            school: "Университет Бэйхан",
+            date: "2012 – 2016"
+          }
+        ],
+        footer: "Обновлено в декабре 2025 г."
+      }
+    };
+
+    // ======================
+    // 渲染函数
+    // ======================
+    let currentLang = 'zh';
+
+    function render(lang) {
+      const data = resumeData[lang];
+      if (!data) return;
+
+      document.getElementById('name').textContent = data.name;
+      document.getElementById('title').textContent = data.title;
+      document.getElementById('contactInfo').innerHTML = data.contact.map(item => `<span>${item}</span>`).join('');
+      
+      document.getElementById('skillsTitle').textContent = data.skillsTitle;
+      document.getElementById('skillsList').innerHTML = data.skills.map(skill => 
+        `<span class="skill-tag">${skill}</span>`
+      ).join('');
+
+      document.getElementById('experienceTitle').textContent = data.experienceTitle;
+      document.getElementById('experienceList').innerHTML = data.experience.map(exp => `
+        <div class="experience-item">
+          <div class="item-header">
+            <div>
+              <div class="job-title">${exp.title}</div>
+              <div class="company">${exp.company}</div>
+            </div>
+            <div class="date">${exp.date}</div>
+          </div>
+          <ul>
+            ${exp.duties.map(d => `<li>${d}</li>`).join('')}
+          </ul>
+        </div>
+      `).join('');
+
+      document.getElementById('educationTitle').textContent = data.educationTitle;
+      document.getElementById('educationList').innerHTML = data.education.map(edu => `
+        <div class="education-item">
+          <div class="item-header">
+            <div>
+              <div class="degree">${edu.degree}</div>
+              <div class="school">${edu.school}</div>
+            </div>
+            <div class="date">${edu.date}</div>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('footerText').textContent = data.footer;
+
+      // 更新按钮状态
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+
+      currentLang = lang;
+    }
+
+    // ======================
+    // 事件绑定
+    // ======================
+    document.getElementById('langSwitcher').addEventListener('click', (e) => {
+      if (e.target.classList.contains('lang-btn')) {
+        const lang = e.target.dataset.lang;
+        render(lang);
+      }
+    });
+
+    // 初始渲染
+    render(currentLang);
+  </script>
+</body>
+</html>
