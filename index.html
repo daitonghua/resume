@@ -26,6 +26,17 @@
       overflow: hidden;
       position: relative;
     }
+    .contact-info a {
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .contact-info a:hover {
+      color: var(--accent-color);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+    }
     
     /* 语言切换按钮 */
     .lang-switcher {
@@ -99,7 +110,7 @@
       border-bottom: none;
     }
     h2 {
-      color: #2c3e50;
+      color: #2d3958;
       margin-bottom: 20px;
       padding-bottom: 8px;
       border-bottom: 2px solid #3498db;
@@ -187,6 +198,8 @@
         right: 10px;
       }
     }
+
+    
   </style>
 </head>
 <body>
@@ -222,6 +235,21 @@
       <div id="educationList"></div>
     </div>
 
+    <div class="section">
+      <h2 id="awardsTitle"></h2>
+      <ul id="awardsList"></ul>
+    </div>
+
+    <div class="section">
+      <h2 id="publicationsTitle"></h2>
+      <ul id="publicationsList"></ul>
+    </div>
+
+    <div class="section">
+      <h2 id="conferencesTitle"></h2>
+      <ul id="conferencesList"></ul>
+    </div>
+
     <div class="footer" id="footerText"></div>
   </div>
 
@@ -233,11 +261,24 @@
       zh: {
         name: "戴瞳华",
         title: "中射频算法工程师，通信专业博士生",
-        contact: ["📱 132-4259-9537", "✉️ daitonghua@gmail.com", "📍 莫斯科", "🔗 https://www.hse.ru/org/persons/870178600/"],
-        skillsTitle: "专业技能",
+        contact: [
+          "📱 132-4259-9537",
+          '✉️ <a href="mailto:daitonghua@gmail.com">daitonghua@gmail.com</a>',
+          "📍 莫斯科",
+          '<a href="https://www.hse.ru/org/persons/870178600/" target="_blank" rel="noopener">🔗 https://www.hse.ru/org/persons/870178600/</a>'
+        ],
+        skillsTitle: "特长",
         skills: ["通信算法", "非线性补偿算法", "神经网络压缩方法", "无线感知算法", "数字信号处理", "RTL设计/Verilog", "Python", "MATLAB", "俄语"],
         experienceTitle: "工作经历",
         experience: [
+          {
+            title: "兼职工程师",
+            company: "俄罗斯科学院无线电工程与电子研究所",
+            date: "2020.09 – 2021.07",
+            duties: [
+              "研究不规则异质结构中的磁弹波特性，所做工作发表于Ultrasonics期刊上"
+            ]
+          },
           {
             title: "工程师",
             company: "Huawei Moscow Research Center",
@@ -245,7 +286,7 @@
             duties: [
               "负责中射频非线性模型量化方法开发，相对工程化基线，无损降低50%系数位宽",
               "充分结合算法与ASIC设计，推动产品能效持续提高，每一代芯片较前一代资源减少30%以上",
-              "获奖：Golden Seed Award, 2023 Annual Best Support Award, Continuous Contribution Award"
+              "获奖：Golden Seed Award, 2022 Annual Best Support Award, Continuous Contribution Award"
             ]
           },
           {
@@ -284,12 +325,31 @@
             gpa: "4.6/5.0"
           }
         ],
+        awardsTitle: "比赛",
+        awards: [
+          "全俄Opendoors竞赛 物理赛道 Winner(2021)",
+          "俄罗斯高等经济大学博士公费配额选拔 Winner(2023)",
+          "华为杯大学生无线通信算法大赛 一等奖(2025)"
+        ],
+        publicationsTitle: "发表论文",
+        publications: [
+          "Hypersonic magnetoelastic waves in inhomogeneous structures. <em>Ultrasonics</em> (Acoustics and Ultrasonics, Q1), Apr. 2022."
+        ],
+        conferencesTitle: "会议报告",
+        conferences: [
+          "Wi-Fi Based Gesture Recognition System. EN&T-2024, Dolgoprudny, Russia, Nov. 2024."
+        ],
         footer: "更新于 2025 年 12 月"
       },
       en: {
         name: "Dai Tonghua",
         title: "IRF Algorithm Engineer, PhD Candidate",
-        contact: ["📱 +7 916 069-94-36", "✉️ daitonghua@gmail.com", "📍 Moscow, Russia", "🔗 https://www.hse.ru/org/persons/870178600/"],
+        contact: [
+          "📱 +7 916 069-94-36",
+          '✉️ <a href="mailto:daitonghua@gmail.com">daitonghua@gmail.com</a>',
+          "📍 Moscow, Russia",
+          '<a href="https://www.hse.ru/org/persons/870178600/" target="_blank" rel="noopener">🔗 https://www.hse.ru/org/persons/870178600/</a>'
+        ],
         skillsTitle: "Technical Skills",
         skills: [
           "Algorithms For Communication Systems",
@@ -305,13 +365,21 @@
         experienceTitle: "Professional Experience",
         experience: [
           {
+            title: "Part-Time Engineer",
+            company: "Institute of Radioengineering and Electronics of RAS",
+            date: "Sept. 2020 – July 2021",
+            duties: [
+              "Investigated magnetoelastic waves in irregular heterostructures; results published in Ultrasonics."
+            ]
+          },
+          {
             title: "Engineer",
             company: "Huawei Moscow Research Center",
             date: "Oct 2021 – Present",
             duties: [
               "Developed quantization methods for IRF nonlinear models, achieving 50% reduction in coefficient bit-width with no performance degradation compared to the baseline.",
               "Bridged algorithm design and ASIC implementation to continuously improve product energy efficiency; each new chip generation reduced hardware resources by over 30% compared to the previous one.",
-              "Awards: Golden Seed Award, 2023 Annual Best Support Award, Continuous Contribution Award"
+              "Awards: Golden Seed Award, 2022 Annual Best Support Award, Continuous Contribution Award"
             ]
           },
           {
@@ -350,12 +418,31 @@
             gpa: "4.6/5.0"
           }
         ],
+        awardsTitle: "Competitions",
+        awards: [
+          "Winner, Physics Track – All-Russian Opendoors Olympiad (2021)",
+          "Winner, PhD quota Competition at HSE University, Russia (2023)",
+          "First Prize – Huawei Collegiate Wireless Communication Algorithm Contest (2025)"
+        ],
+        publicationsTitle: "Publications",
+        publications: [
+          "Hypersonic magnetoelastic waves in inhomogeneous structures. <em>Ultrasonics</em> (Acoustics and Ultrasonics, Q1), Apr. 2022."
+        ],
+        conferencesTitle: "Conference Presentations",
+        conferences: [
+          "Wi-Fi Based Gesture Recognition System. EN&T-2024, Dolgoprudny, Russia, Nov. 2024."
+        ],
         footer: "Updated December 2025"
       },
       ru: {
         name: "Дай Тунхуа",
         title: "Инженер Huawei, Аспирант НИУ ВШЭ",
-        contact: ["📱 +7 916 069-94-36", "✉️ daitonghua@gmail.com", "📍 Москва, Россия", "🔗 https://www.hse.ru/org/persons/870178600/"],
+        contact: [
+          "📱 +7 916 069-94-36",
+          '✉️ <a href="mailto:daitonghua@gmail.com">daitonghua@gmail.com</a>',
+          "📍 Москва, Россия",
+          '<a href="https://www.hse.ru/org/persons/870178600/" target="_blank" rel="noopener">🔗 https://www.hse.ru/org/persons/870178600/</a>'
+        ],
         skillsTitle: "Профессиональные навыки",
         skills: [
           "Алгоритмы для системы связи",
@@ -371,13 +458,21 @@
         experienceTitle: "Опыт работы",
         experience: [
           {
+            title: "Инженер на 0.5 ставки",
+            company: "Институт радиотехники и электроники РАН",
+            date: "Сен. 2020 – Июл. 2021",
+            duties: [
+              "Проведено исследование магнитоупругих волн в нерегулярных гетероструктурах; работа опубликована в журнале Ultrasonics."
+            ]
+          },
+          {
             title: "Инженер",
             company: "Научно-исследовательский центр Huawei (Москва)",
             date: "Окт. 2021 – Наст. время",
             duties: [
               "Разработал методы квантования нелинейных моделей DPD/PIM, позволившие сократить разрядность коэффициентов на 50% без потерь качества по сравнению с baseline.",
               "Обеспечил тесную интеграцию алгоритмов и проектирования чипов, что позволило последовательно повышать энергоэффективность продуктов: каждое новое поколение чипов потребляет на 30% меньше ресурсов, чем предыдущее.",
-              "Награды: Golden Seed Award, 2023 Annual Best Support Award, Continuous Contribution Award"
+              "Награды: Golden Seed Award, 2022 Annual Best Support Award, Continuous Contribution Award"
             ]
           },
           {
@@ -415,6 +510,20 @@
             thesis: "Магнитоупругие волны в нерегулярных структурах",
             gpa: "4.6/5.0"
           }
+        ],
+        awardsTitle: "Конкурсы и олимпиады",
+        awards: [
+          "Победитель по направлению «Физика» – Всероссийская олимпиада Opendoors (2021)",
+          "Победитель квотного отбора на обучение в аспирантуре НИУ ВШЭ (2023)",
+          "Первое место – Студенческий конкурс алгоритмов беспроводной связи Huawei (2025)"
+        ],
+        publicationsTitle: "Публикации",
+        publications: [
+          "Hypersonic magnetoelastic waves in inhomogeneous structures. <em>Ultrasonics</em> (Acoustics and Ultrasonics, Q1), Apr. 2022."
+        ],
+        conferencesTitle: "Конференции",
+        conferences: [
+          "Wi-Fi Based Gesture Recognition System. EN&T-2024, Dolgoprudny, Russia, Nov. 2024."
         ],
         footer: "Обновлено в декабре 2025 г."
       }
@@ -469,6 +578,24 @@
           ${edu.thesis ? `<div class="thesis"> Thesis: ${edu.thesis}</div>` : ''}
         </div>
       `).join('');
+
+      document.getElementById('awardsTitle').textContent = data.awardsTitle || '';
+      document.getElementById('awardsList').innerHTML = data.awards 
+        ? data.awards.map(award => `<li>${award}</li>`).join('')
+        : '';
+        
+        // 渲染 Publications
+      document.getElementById('publicationsTitle').textContent = data.publicationsTitle || '';
+      document.getElementById('publicationsList').innerHTML = data.publications 
+        ? data.publications.map(pub => `<li>${pub}</li>`).join('')
+        : '';
+
+      // 渲染 Conferences
+      document.getElementById('conferencesTitle').textContent = data.conferencesTitle || '';
+      document.getElementById('conferencesList').innerHTML = data.conferences 
+        ? data.conferences.map(conf => `<li>${conf}</li>`).join('')
+        : '';
+
 
       document.getElementById('footerText').textContent = data.footer;
 
