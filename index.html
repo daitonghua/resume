@@ -26,18 +26,20 @@
       overflow: hidden;
       position: relative;
     }
-    .contact-info a {
+    /* 全局链接样式：适用于简历正文中的所有 <a> */
+    .container a {
       color: inherit;
       text-decoration: none;
       cursor: pointer;
     }
-    .contact-info a:hover {
+    .container a:hover {
       color: var(--accent-color);
       text-decoration: underline;
       text-decoration-thickness: 1px;
       text-underline-offset: 2px;
     }
-    
+
+
     /* 语言切换按钮 */
     .lang-switcher {
       position: absolute;
@@ -61,46 +63,58 @@
       color: white;
     }
 
-    header {
-      background: #2c3e50;
-      color: white;
-      padding: 50px 30px 30px;
-      text-align: center;
-      position: relative;
-    }
-    .avatar {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 4px solid #3498db;
-      overflow: hidden; /* 关键：隐藏超出圆形的部分 */
-      margin: 0 auto 20px;
-      background: #ddd;
-    }
+header {
+  background: #2c3e50;
+  color: white;
+  padding: 20px; /* 减少内边距以适应新布局 */
+  display: flex;
+  align-items: center; /* 垂直居中对齐 */
+  position: relative;
+}
 
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* 关键：保持比例并填满容器 */
-      display: block;
-    }
-    h1 {
-      font-size: 32px;
-      margin-bottom: 8px;
-    }
-    .title {
-      color: #3498db;
-      font-size: 20px;
-      margin-bottom: 15px;
-    }
-    .contact-info {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin-top: 10px;
-      font-size: 14px;
-    }
+.avatar {
+  width: 160px; /* 放大头像尺寸 */
+  height: 160px; /* 放大头像尺寸 */
+  border-radius: 50%;
+  border: 4px solid #3498db;
+  overflow: hidden;
+  margin-right: 50px; /* 给头像和信息之间留出间距 */
+  background: #ddd;
+  flex-shrink: 0; /* 防止头像被压缩 */
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.info {
+  /* 让信息内容左对齐 */
+}
+
+h1 {
+  font-size: 32px;
+  margin-bottom: 8px;
+  margin-top: 0; /* 确保没有多余的顶部外边距 */
+}
+
+.title {
+  color: #3498db;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.contact-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+    
 
     .section {
       padding: 25px 30px;
@@ -146,8 +160,9 @@
     .company, .school {
       color: #3498db;
       margin: 4px 0;
+
     }
-    .date {
+    /* .date {
       color: #7f8c8d;
       font-style: italic;
       white-space: nowrap;
@@ -169,7 +184,7 @@
       border-bottom: 1px dashed #eee;
       font-style: italic;
       color: #555;
-    }
+    } */
 
     ul {
       padding-left: 20px;
@@ -215,9 +230,11 @@
       <div class="avatar">
         <img src="daitonghua.jpg" alt="Photo of Dai Tonghua"> 
       </div>
-      <h1 id="name"></h1>
-      <div class="title" id="title"></div>
-      <div class="contact-info" id="contactInfo"></div>
+  <div class="info">
+    <h1 id="name"></h1>
+    <div class="title" id="title"></div>
+    <div class="contact-info" id="contactInfo"></div>
+  </div>
     </header>
 
     <div class="section">
@@ -262,23 +279,16 @@
         name: "戴瞳华",
         title: "中射频算法工程师，通信专业博士生",
         contact: [
-          "📱 132-4259-9537",
+          "📱 +86 132-4259-9537， +7 916-069-94-36",
           '✉️ <a href="mailto:daitonghua@gmail.com">daitonghua@gmail.com</a>',
           "📍 莫斯科",
-          '<a href="https://www.hse.ru/org/persons/870178600/" target="_blank" rel="noopener">🔗 https://www.hse.ru/org/persons/870178600/</a>'
+          '<a href="https://www.hse.ru/org/persons/870178600/" target="_blank" rel="noopener">🔗 https://www.hse.ru/org/persons/870178600/</a>',
+          '<a href="https://daitonghua.github.io/resume/" target="_blank" rel="noopener">🔗 https://daitonghua.github.io/resume/</a>'
         ],
-        skillsTitle: "特长",
+        skillsTitle: "特长技能",
         skills: ["通信算法", "非线性补偿算法", "神经网络压缩方法", "无线感知算法", "数字信号处理", "RTL设计/Verilog", "Python", "MATLAB", "俄语"],
         experienceTitle: "工作经历",
         experience: [
-          {
-            title: "兼职工程师",
-            company: "俄罗斯科学院无线电工程与电子研究所",
-            date: "2020.09 – 2021.07",
-            duties: [
-              "研究不规则异质结构中的磁弹波特性，所做工作发表于Ultrasonics期刊上"
-            ]
-          },
           {
             title: "工程师",
             company: "Huawei Moscow Research Center",
@@ -294,7 +304,16 @@
             company: "俄罗斯高等经济大学",
             date: "2025.01 – 2025.07",
             duties: [
-              "教授课程：Systems and Networks of Information Transfer",
+              "教授课程：Systems and Networks of Information Transfer ",
+              '课程链接 <a href="https://www.hse.ru/en/edu/courses/904327944" target="_blank" rel="noopener">🔗 https://www.hse.ru/en/edu/courses/904327944 </a>'
+            ]
+          },
+          {
+            title: "兼职工程师",
+            company: "俄罗斯科学院无线电工程与电子研究所",
+            date: "2020.09 – 2021.07",
+            duties: [
+              "研究不规则异质结构中的磁弹波特性，所做工作发表于Ultrasonics期刊上"
             ]
           }
         ],
@@ -304,25 +323,31 @@
             degree: "博士生",
             school: "俄罗斯高等经济大学",
             date: "2023 – 2027 (预计)",
-            major: "通信系统、网络与设备",
-            thesis: "基于无线网络的感知方法",
+            content: [
+              "专业：通信系统、网络与设备",
+              "学位论文：基于无线网络的感知方法"
+            ]
             // gpa: "-"
           },
           {
             degree: "硕士（优秀毕业生）",
             school: "莫斯科物理技术学院",
             date: "2021 – 2023",
-            major: "应用数学与物理",
-            thesis: "开发数字预失真的量化方法",
-            gpa: "5.0/5.0"
+            content: [
+              "专业：应用数学与物理",
+              "学位论文：数字预失真的系数量化方法开发",
+              "GPA: 5.0/5.0"
+            ]
           },
           {
             degree: "学士",
             school: "莫斯科物理技术学院",
             date: "2016 – 2021",
-            major: "应用数学与物理",
-            thesis: "不规则结构中的磁弹波",
-            gpa: "4.6/5.0"
+            content: [
+              "专业：应用数学与物理",
+              "学位论文：不规则结构中的磁弹波",
+              "GPA: 4.6/5.0"
+            ]
           }
         ],
         awardsTitle: "比赛",
@@ -333,22 +358,23 @@
         ],
         publicationsTitle: "发表论文",
         publications: [
-          "（一作）Hypersonic magnetoelastic waves in inhomogeneous structures. <em>Ultrasonics</em> (Acoustics and Ultrasonics, Q1), Apr. 2022."
+          "T. Dai, D.V. Kalyabin, S.A. Nikitov, Hypersonic magnetoelastic waves in inhomogeneous structures. <em>Ultrasonics</em> (Acoustics and Ultrasonics, Q1), Apr. 2022."
         ],
         conferencesTitle: "会议报告",
         conferences: [
-          "（一作）Wi-Fi Based Gesture Recognition System. EN&T-2024, Dolgoprudny, Russia, Nov. 2024."
+          "T. Dai, E.M. Khorov, Система распознавания жестов на основе сигналов беспроводных сетей. EN&T-2024, Dolgoprudny, Russia, Nov. 2024."
         ],
-        footer: "更新于 2025 年 12 月"
+        footer: "更新于 2026 年 02 月"
       },
       en: {
         name: "Dai Tonghua",
         title: "IRF Algorithm Engineer, PhD Candidate",
         contact: [
-          "📱 +7 916 069-94-36",
+          "📱 +86 132-4259-9537， +7 916-069-94-36",
           '✉️ <a href="mailto:daitonghua@gmail.com">daitonghua@gmail.com</a>',
           "📍 Moscow, Russia",
-          '<a href="https://www.hse.ru/org/persons/870178600/" target="_blank" rel="noopener">🔗 https://www.hse.ru/org/persons/870178600/</a>'
+          '<a href="https://www.hse.ru/org/persons/870178600/" target="_blank" rel="noopener">🔗 https://www.hse.ru/org/persons/870178600/</a>',
+          '<a href="https://daitonghua.github.io/resume/" target="_blank" rel="noopener">🔗 https://daitonghua.github.io/resume/</a>'
         ],
         skillsTitle: "Technical Skills",
         skills: [
@@ -365,14 +391,6 @@
         experienceTitle: "Professional Experience",
         experience: [
           {
-            title: "Part-Time Engineer",
-            company: "Institute of Radioengineering and Electronics of RAS",
-            date: "Sept. 2020 – July 2021",
-            duties: [
-              "Investigated magnetoelastic waves in irregular heterostructures; results published in Ultrasonics."
-            ]
-          },
-          {
             title: "Engineer",
             company: "Huawei Moscow Research Center",
             date: "Oct 2021 – Present",
@@ -387,35 +405,49 @@
             company: "National Research University Higher School of Economics (HSE)",
             date: "Jan 2025 – Jul 2025",
             duties: [
-              "Taught 'Systems and Networks of Information Transfer' course."
+              "Taught 'Systems and Networks of Information Transfer' course.",
+              'Link <a href="https://www.hse.ru/en/edu/courses/904327944" target="_blank" rel="noopener">🔗 https://www.hse.ru/en/edu/courses/904327944 </a>'
+            ]
+          },
+          {
+            title: "Part-Time Engineer",
+            company: "Institute of Radioengineering and Electronics of RAS",
+            date: "Sept. 2020 – July 2021",
+            duties: [
+              "Investigated magnetoelastic waves in irregular heterostructures; results published in Ultrasonics."
             ]
           }
         ],
         educationTitle: "Education",
         education: [
           {
-            degree: "PhD Candidate",
-            school: "National Research University Higher School of Economics (HSE)",
-            date: "2023 – 2027 (expected)",
-            major: "Communication Systems, Networks and Devices",
-            thesis: "Sensing Methods Based on Wireless Networks",
-            // gpa: "-"
+            degree: "Аспирант",
+            school: "НИУ ВШЭ",
+            date: "2023 – 2027 (ожидается)",
+            content: [
+              "Специальность: Системы, сети и устройства телекоммуникаций",
+              "Диссертация: Методы радиолокационного зондирования на основе беспроводных сетей"
+            ]
           },
           {
-            degree: "Master's degree with Honors",
-            school: "Moscow Institute of Physics and Technology (MIPT)",
+            degree: "Магистр с отличием",
+            school: "МФТИ",
             date: "2021 – 2023",
-            major: "Applied Mathematics and Physics",
-            thesis: "Development of Quantization Methods for Digital Predistortion",
-            gpa: "5.0/5.0"
+            content: [
+              "Специальность: Прикладная математика и физика",
+              "Диссертация: Разработка методов квантования коэффициентов цифрового предыскажения",
+              "GPA: 5.0/5.0"
+            ]
           },
           {
-            degree: "Bachelor's degree",
-            school: "Moscow Institute of Physics and Technology (MIPT)",
+            degree: "Бакалавр",
+            school: "МФТИ",
             date: "2016 – 2021",
-            major: "Applied Mathematics and Physics",
-            thesis: "Magnetoelastic Waves in Irregular Structures",
-            gpa: "4.6/5.0"
+            content: [
+              "Специальность: Прикладная математика и физика",
+              "Диссертация: Магнитоупругие волны в нерегулярных структурах",
+              "GPA: 4.6/5.0"
+            ]
           }
         ],
         awardsTitle: "Competitions",
@@ -426,22 +458,23 @@
         ],
         publicationsTitle: "Publications",
         publications: [
-          "Hypersonic magnetoelastic waves in inhomogeneous structures. <em>Ultrasonics</em> (Acoustics and Ultrasonics, Q1), Apr. 2022."
+          "T. Dai, D.V. Kalyabin, S.A. Nikitov, Hypersonic magnetoelastic waves in inhomogeneous structures. <em>Ultrasonics</em> (Acoustics and Ultrasonics, Q1), Apr. 2022."
         ],
         conferencesTitle: "Conference Presentations",
         conferences: [
-          "Wi-Fi Based Gesture Recognition System. EN&T-2024, Dolgoprudny, Russia, Nov. 2024."
+          "T. Dai, E.M. Khorov, Система распознавания жестов на основе сигналов беспроводных сетей. EN&T-2024, Dolgoprudny, Russia, Nov. 2024."
         ],
-        footer: "Updated December 2025"
+        footer: "Updated Feb. 2026"
       },
       ru: {
         name: "Дай Тунхуа",
         title: "Инженер Huawei, Аспирант НИУ ВШЭ",
         contact: [
-          "📱 +7 916 069-94-36",
+          "📱 +86 132-4259-9537， +7 916-069-94-36",
           '✉️ <a href="mailto:daitonghua@gmail.com">daitonghua@gmail.com</a>',
           "📍 Москва, Россия",
-          '<a href="https://www.hse.ru/org/persons/870178600/" target="_blank" rel="noopener">🔗 https://www.hse.ru/org/persons/870178600/</a>'
+          '<a href="https://www.hse.ru/org/persons/870178600/" target="_blank" rel="noopener">🔗 https://www.hse.ru/org/persons/870178600/</a>',
+          '<a href="https://daitonghua.github.io/resume/" target="_blank" rel="noopener">🔗 https://daitonghua.github.io/resume/</a>'
         ],
         skillsTitle: "Профессиональные навыки",
         skills: [
@@ -458,14 +491,6 @@
         experienceTitle: "Опыт работы",
         experience: [
           {
-            title: "Инженер на 0.5 ставки",
-            company: "Институт радиотехники и электроники РАН",
-            date: "Сен. 2020 – Июл. 2021",
-            duties: [
-              "Проведено исследование магнитоупругих волн в нерегулярных гетероструктурах; работа опубликована в журнале Ultrasonics."
-            ]
-          },
-          {
             title: "Инженер",
             company: "Научно-исследовательский центр Huawei (Москва)",
             date: "Окт. 2021 – Наст. время",
@@ -480,7 +505,16 @@
             company: "НИУ ВШЭ",
             date: "Янв. 2025 – Июл. 2025",
             duties: [
-              "Курс «Системы и сети передачи информации»."
+              "Курс «Системы и сети передачи информации».",
+              'Сайт курса <a href="https://www.hse.ru/en/edu/courses/904327944" target="_blank" rel="noopener">🔗 https://www.hse.ru/en/edu/courses/904327944 </a>'
+            ]
+          },
+          {
+            title: "Инженер на 0.5 ставки",
+            company: "Институт радиотехники и электроники РАН",
+            date: "Сен. 2020 – Июл. 2021",
+            duties: [
+              "Проведено исследование магнитоупругих волн в нерегулярных гетероструктурах; работа опубликована в журнале Ultrasonics."
             ]
           }
         ],
@@ -489,26 +523,31 @@
           {
             degree: "Аспирант",
             school: "НИУ ВШЭ",
-            date: "2023 – 2027",
-            major: "Системы, сети и устройства телекоммуникаций",
-            thesis: "Разработка и исследование методов детектирования с помощью сигналов беспроводной связи",
-            // gpa: "-"
+            date: "2023 – 2027 (ожидается)",
+            content: [
+              "Специальность: Системы, сети и устройства телекоммуникаций",
+              "Диссертация: Методы радиолокационного зондирования на основе беспроводных сетей"
+            ]
           },
           {
             degree: "Магистр с отличием",
             school: "МФТИ",
             date: "2021 – 2023",
-            major: "Прикладная математика и физика",
-            thesis: "Разработка методов квантования для цифровой предыскажения",
-            gpa: "5.0/5.0"
+            content: [
+              "Специальность: Прикладная математика и физика",
+              "Диссертация: Разработка методов квантования коэффициентов цифрового предыскажения",
+              "GPA: 5.0/5.0"
+            ]
           },
           {
             degree: "Бакалавр",
             school: "МФТИ",
             date: "2016 – 2021",
-            major: "Прикладная математика и физика",
-            thesis: "Магнитоупругие волны в нерегулярных структурах",
-            gpa: "4.6/5.0"
+            content: [
+              "Специальность: Прикладная математика и физика",
+              "Диссертация: Магнитоупругие волны в нерегулярных структурах",
+              "GPA: 4.6/5.0"
+            ]
           }
         ],
         awardsTitle: "Конкурсы и олимпиады",
@@ -519,13 +558,13 @@
         ],
         publicationsTitle: "Публикации",
         publications: [
-          "Hypersonic magnetoelastic waves in inhomogeneous structures. <em>Ultrasonics</em> (Acoustics and Ultrasonics, Q1), Apr. 2022."
+          "T. Dai, D.V. Kalyabin, S.A. Nikitov, Hypersonic magnetoelastic waves in inhomogeneous structures. <em>Ultrasonics</em> (Acoustics and Ultrasonics, Q1), Apr. 2022."
         ],
         conferencesTitle: "Конференции",
         conferences: [
-          "Wi-Fi Based Gesture Recognition System. EN&T-2024, Dolgoprudny, Russia, Nov. 2024."
+          "T. Dai, E.M. Khorov, Система распознавания жестов на основе сигналов беспроводных сетей. EN&T-2024, Dolgoprudny, Russia, Nov. 2024."
         ],
-        footer: "Обновлено в декабре 2025 г."
+        footer: "Обновлено в феврале 2026 г."
       }
     };
 
@@ -568,14 +607,16 @@
         <div class="education-item">
           <div class="item-header">
             <div>
-              <div class="degree">${edu.degree}</div>
-              <div class="school">${edu.school}</div>
-              ${edu.major ? `<div class="major">${edu.major}</div>` : ''}
-              ${edu.gpa ? `<div class="gpa">GPA: ${edu.gpa}</div>` : ''}
+              <div class="job-title">${edu.degree}</div>
+              <div class="company">${edu.school}</div>
             </div>
             <div class="date">${edu.date}</div>
           </div>
-          ${edu.thesis ? `<div class="thesis"> Thesis: ${edu.thesis}</div>` : ''}
+          ${edu.content ? `
+            <ul>
+              ${edu.content.map(c => `<li>${c}</li>`).join('')}
+            </ul>
+          ` : ''}
         </div>
       `).join('');
 
