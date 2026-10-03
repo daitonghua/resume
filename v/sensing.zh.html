@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#b91c1c">
+<title>戴瞳华 · 无线感知 / 研究版</title>
+<meta name="description" content="戴瞳华 · 无线感知 / 研究版">
+<style>
+:root{
+  --ink:#16181d; --muted:#6b7280; --faint:#9aa1ad; --line:#e7e9ee;
+  --accent:#2563eb; --accent-soft:#eff4ff; --bg:#fbfbfc; --card:#ffffff;
+  --maxw:860px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:"Inter","Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",
+              "PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+  color:var(--ink); background:var(--bg); line-height:1.62;
+  font-size:15px; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:34px 34px 72px}
+a{color:inherit;text-decoration:none}
+a:hover{color:var(--accent)}
+
+/* ---------- 控制条 ---------- */
+.bar{
+  position:sticky; top:0; z-index:50; backdrop-filter:saturate(180%) blur(12px);
+  background:rgba(251,251,252,.86); border-bottom:1px solid var(--line);
+}
+.bar-in{max-width:var(--maxw);margin:0 auto;padding:9px 22px;display:flex;gap:12px;align-items:center;flex-wrap:nowrap}
+.bar-group{display:flex;gap:6px;align-items:center;flex:0 0 auto}
+.bar-label{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);font-weight:600}
+.bar-sep{width:1px;height:20px;background:var(--line);flex:0 0 auto}
+/* 栏目导航必须保持一行：宽度不够时横向滚动，而不是折到第二行。
+   （折行会把顶栏撑高、吸顶后遮挡内容；用户报过"换语言就掉到第二行"。） */
+.bar-nav{display:flex;gap:2px;align-items:center;flex:1 1 auto;min-width:0;overflow-x:auto;scrollbar-width:none}
+.bar-nav::-webkit-scrollbar{display:none}
+.bar-nav a{
+  font-size:12.5px;color:var(--muted);white-space:nowrap;padding:4px 9px;border-radius:6px;transition:.14s;flex:0 0 auto;
+}
+.bar-nav a:hover{color:var(--ink);background:var(--accent-soft)}
+.bar-nav a.on{color:var(--accent);background:var(--accent-soft);font-weight:600}
+.seg{display:flex;background:var(--accent-soft);border-radius:999px;padding:3px;flex:0 0 auto}
+.seg button{
+  font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);background:none;border:0;
+  padding:4px 12px;border-radius:999px;cursor:pointer;transition:.16s;
+}
+.seg button:hover{color:var(--ink)}
+.seg button.on{background:var(--card);color:var(--accent);box-shadow:0 1px 3px rgba(16,24,40,.10)}
+select{
+  font:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--card);
+  border:1px solid var(--line);border-radius:8px;padding:5px 9px;cursor:pointer;
+}
+select:hover{border-color:var(--accent)}
+.bar-right{margin-left:auto;display:flex;gap:10px;align-items:center;flex:0 0 auto}
+.btn-print{
+  font:inherit;font-size:12.5px;font-weight:600;color:#fff;background:var(--accent);
+  border:0;border-radius:8px;padding:6px 14px;cursor:pointer;transition:.16s;
+}
+.btn-print:hover{filter:brightness(1.08)}
+.variant-note{font-size:12px;color:var(--muted)}
+.variant-note b{color:var(--ink);font-weight:600}
+
+/* ---------- 页头 ---------- */
+.hdr{display:flex;gap:26px;align-items:center;padding:8px 0 26px;border-bottom:1px solid var(--line)}
+.hdr .photo{
+  width:104px;height:104px;border-radius:50%;overflow:hidden;flex:0 0 auto;
+  background:var(--accent-soft);box-shadow:0 2px 10px rgba(16,24,40,.10);
+}
+.hdr .photo img{width:100%;height:100%;object-fit:cover;display:block}
+.hdr h1{font-size:31px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.hdr .role{color:var(--accent);font-weight:600;font-size:14.5px;margin-top:5px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:11px;font-size:13px;color:var(--muted)}
+.meta span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.meta svg{width:13px;height:13px;flex:0 0 auto;stroke:var(--faint);fill:none;stroke-width:1.7}
+.meta a:hover{color:var(--accent)}
+
+/* ---------- 区块 ---------- */
+.section{margin-top:34px}
+/* 锚点跳转补偿：吸顶栏会遮挡板块标题，用 scroll-margin-top 预留出栏高
+   （覆盖直接打开 #sec-xxx 深链接的情形；点击导航则用 JS 精确滚动） */
+.section[id]{scroll-margin-top:72px}
+.section>h2{
+  font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:15px;
+}
+.section>h2::after{content:"";display:block;height:1px;background:var(--line);margin-top:8px}
+
+.bul.core li{font-size:14.5px;background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:11px 15px}
+.bul.core li strong{font-weight:700}
+
+  flex:1 1 190px;background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;transition:.16s;
+}
+
+/* 条目 */
+.entry{margin-bottom:22px}
+.entry:last-child{margin-bottom:0}
+.entry-head{display:flex;justify-content:space-between;gap:14px;align-items:baseline;flex-wrap:wrap}
+.entry-head .t{font-size:16.5px;font-weight:650;letter-spacing:-.01em}
+.entry-head .d{font-size:12.5px;color:var(--faint);white-space:nowrap;font-variant-numeric:tabular-nums}
+.entry .org{font-size:13.5px;color:var(--accent);font-weight:500;margin-top:2px}
+.entry .org a:hover{text-decoration:underline}
+.fact{font-size:13px;color:var(--muted);margin-top:3px}
+.fact b{color:var(--ink);font-weight:600}
+.block{margin-top:11px}
+.block-h{font-size:13.5px;font-weight:650;margin-bottom:4px}
+ul.bul{list-style:none;display:flex;flex-direction:column;gap:5px}
+ul.bul li{font-size:14px;padding-left:15px;position:relative;color:#2b303a}
+ul.bul li::before{content:"";position:absolute;left:2px;top:.63em;width:4px;height:4px;border-radius:50%;background:var(--faint)}
+ul.bul li strong{font-weight:650;color:var(--ink)}
+ul.bul li em{font-style:italic}
+.award{margin-top:10px;font-size:13px;color:var(--muted)}
+.award b{color:var(--ink);font-weight:600}
+.link-inline{font-size:13px;color:var(--accent)}
+
+/* 技能 */
+.skill-group{display:grid;grid-template-columns:82px 1fr;gap:6px 16px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.skill-group:last-child{border-bottom:0}
+.skill-area{font-size:12px;font-weight:650;color:var(--faint);letter-spacing:.05em;text-transform:uppercase;padding-top:3px}
+.skill-items{display:flex;flex-wrap:wrap;gap:7px}
+.chip{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px 11px;font-size:13px}
+.chip .dots{display:inline-flex;gap:2px}
+.chip .dots i{width:5px;height:5px;border-radius:50%;background:var(--line);display:block}
+.chip .dots i.f{background:var(--accent)}
+.chip .note{color:var(--faint);font-size:11.5px}
+
+/* 论文 */
+.pub-kind{font-size:12.5px;font-weight:650;color:var(--muted);margin:14px 0 6px}
+.pub-kind:first-child{margin-top:0}
+ol.pubs{list-style:none;counter-reset:p}
+ol.pubs li{counter-increment:p;font-size:13.5px;padding-left:24px;position:relative;margin-bottom:7px;color:#2b303a}
+ol.pubs li::before{content:"[" counter(p) "]";position:absolute;left:0;color:var(--faint);font-size:12px;font-variant-numeric:tabular-nums}
+ol.pubs li em{font-style:italic}
+.comp-item{margin-bottom:13px}
+.comp-item .n{font-size:14px;font-weight:650}
+.comp-item .n .yr{color:var(--faint);font-weight:500;font-size:12.5px;margin-left:7px}
+.comp-item .dt{font-size:13.5px;color:var(--muted);margin-top:2px}
+
+/* 课程 */
+details.courses{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);overflow:hidden}
+details.courses>summary{
+  cursor:pointer;list-style:none;padding:10px 14px;font-size:13px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+}
+details.courses>summary::-webkit-details-marker{display:none}
+details.courses>summary::after{content:"＋";color:var(--accent);font-weight:700}
+details.courses[open]>summary::after{content:"－"}
+details.courses>summary:hover{background:var(--accent-soft)}
+details.courses .body{padding:4px 14px 14px;font-size:12.5px;color:var(--muted);line-height:1.75}
+/* 课程两级：总名加粗成行，分名缩进 —— 让"数学分析"与它下面的四门课看出归属 */
+.course-group{margin-top:9px}
+.course-group:first-child{margin-top:2px}
+.course-name{font-weight:650;color:var(--ink);font-size:12.5px}
+.course-list{padding-left:13px;border-left:2px solid var(--line);margin-top:2px;color:var(--muted)}
+
+.footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--faint);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+/* 静态版本页：无控制条，回归纯简历 */
+body.static .wrap{padding-top:40px}
+body.static .footer{margin-top:34px}
+
+/* 宽屏利用：按屏幕宽度放宽内容区，避免大屏两侧大片留白。
+   不无限拉伸 —— 行宽过大会降低可读性（长行返回扫视困难）。
+   1600px 以上走"内容 + 侧栏导航"两栏，信息密度更高。 */
+@media (min-width:1180px){ :root{--maxw:1040px} }
+@media (min-width:1500px){ :root{--maxw:1200px} }
+@media (max-width:640px){
+  .wrap{padding:22px 15px 56px}
+  .hdr{gap:18px}
+  .hdr .photo{width:76px;height:76px}
+  .hdr h1{font-size:24px}
+  .skill-group{grid-template-columns:1fr;gap:4px}
+  .bar-in{padding:9px 15px;gap:10px}
+  /* 窄屏：控制条分两行，栏目导航单独占一行并横向滑动 */
+  .bar-sep{display:none}
+  .bar-nav{order:3;flex:1 1 100%;flex-wrap:nowrap}
+  .bar-right{margin-left:auto;gap:8px}
+  .btn-print{padding:6px 10px;font-size:12px}
+  .section[id]{scroll-margin-top:104px}
+}
+
+@media print{
+  /* A4 要在样式里定死：否则纸张大小取决于打印对话框的默认值，
+     某些系统默认 Letter，页边距与页码位置会跟着错。 */
+  @page{size:A4;margin:12mm}
+  :root{--bg:#fff;--card:#fff}
+  body{font-size:10.4pt;background:#fff}
+  .bar{display:none!important}
+  .wrap{max-width:none;margin:0;padding:0}
+  a{text-decoration:none}
+  /* 课程清单在打印时必须展开，否则内容会被折叠吞掉 */
+  details.courses{border:0}
+  details.courses>summary{padding:0 0 4px;font-weight:700}
+  details.courses>summary::after{display:none}
+  details.courses>.body{display:block!important}
+  /* 分页控制：整条不跨页，但板块标题后不要立刻分页（避免孤立标题） */
+  .section{break-inside:auto}
+  .entry,.stat,.comp-item,.skill-group,.award,.bul.core li{break-inside:avoid}
+  .section>h2{break-after:avoid}
+  .entry-head{break-after:avoid}
+  .org,.block-h{break-after:avoid}
+  h1,h2{break-after:avoid}
+}
+
+/* PDF 下载入口：一条克制的按钮，放在页脚之后 */
+.dl-wrap{margin-top:22px}
+.dl{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13.5px;font-weight:600;color:var(--accent);
+  background:var(--accent-soft);border:1px solid transparent;border-radius:9px;
+  padding:8px 16px;transition:.16s;
+}
+.dl:hover{background:var(--card);border-color:var(--accent);text-decoration:none}
+.dl svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+@media print{
+  .dl-wrap{display:none!important}
+}
+
+:root{--accent:#b91c1c}
+/* build ecf357c178d2 · sensing/zh */
+</style>
+</head>
+<body class="static">
+<main class="wrap">
+<header class="hdr">
+  <div class="photo"><img src="daitonghua.jpg" alt="戴瞳华"></div>
+  <div class="hdr-info">
+    <h1>戴瞳华</h1>
+    <div class="role">算法工程师 · 算法-硬件协同设计 · 通信博士生</div>
+    <div class="meta"><span><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><a href="tel:+8613242599537">+86 132-4259-9537</a></span><span><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><a href="tel:+79160699436">+7 916-069-94-36</a></span><span><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg><a href="mailto:daitonghua@gmail.com">daitonghua@gmail.com</a></span><span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></svg><a href="https://daitonghua.github.io/resume/">daitonghua.github.io/resume</a></span><span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></svg><a href="https://www.hse.ru/org/persons/870178600/">hse.ru/org/persons/870178600</a></span></div>
+  </div>
+</header>
+<section class="section" data-section="competency">
+  <h2>专业方向</h2>
+  <ul class="bul"><li><strong>量化算法</strong>：模型 / 信号量化全链路 —— 混合精度量化、量化感知训练（QAT）、改进量化算子、梯度和迭代优化器状态压缩；对参数、信号通路、存储、梯度、优化器位宽统一优化，相对工程化基线<strong>无损降到 X bit</strong>。</li></ul>
+<ul class="bul"><li><strong>无线感知算法</strong>：系统定义并求解广义 Wi-Fi 跨域感知问题，包括单链路零开销跨域识别、开放集手势检测、少样本开放集识别。</li></ul>
+<ul class="bul"><li><strong>数理基础</strong>：MIPT 应用数学与物理 5.0/5.0 优秀毕业生，本科方向为应用数学与物理，理论物理通过朗道势垒（Landau's Theoretical Minimum），发表 SCI 物理二区论文（<em>Ultrasonics</em>）；算法推导可回到第一性原理。</li></ul>
+</section>
+<section class="section" data-section="research">
+  <h2>科研项目</h2>
+  <div class="entry">
+    <div class="entry-head">
+    <div class="t ">Wi-Fi 广义跨域手势识别 — 博士论文</div>
+    <div class="d">2023 – 2027（预计）</div>
+  </div>
+    <div class="org">俄罗斯高等经济大学（HSE）</div>
+    <div class="block"><ul class="bul"><li>学位论文：开发在广义跨域任务中的基于 Wi-Fi 信号的手势识别方法。独立完成开题，系统性地将 Wi-Fi 跨域感知问题广义化，确立了全新的研究方向。</li><li>首个基于 Wi-Fi 的<strong>单链路、零努力（zero-effort）跨域手势识别</strong>系统。</li><li>首个面向 Wi-Fi 手势识别任务的<strong>少样本开放集识别</strong>框架。</li><li>首个对语义偏移与协变偏移鲁棒的 Wi-Fi 手势<strong>分布外检测</strong>框架。</li><li>首个应对<strong>支持集与查询集偏移</strong>的双重跨域少样本 Wi-Fi 手势识别方法。</li></ul></div>
+  </div>
+</section>
+<section class="section" data-section="publication">
+  <h2>论文与报告</h2>
+  <div class="pub-kind">期刊论文</div><ol class="pubs"><li><strong>T. Dai</strong>, E. Khorov, Li-WiGR: A Lightweight Wi-Fi-based Gesture Recognition System with CSI Subcarrier Grouping. <em>Journal of Communications Technology and Electronics</em>（已接收，2026 年 12 月出版）.</li><li><strong>Т. Дай</strong>, Е. Хоров, Li-WiGR: Легковесная система распознавания жестов на основе Wi-Fi с группированием поднесущих CSI. <em>Информационные процессы</em>, Т. 26, № 2, 2026.</li><li><strong>T. Dai</strong>, E. Khorov, WiZeCSi: Toward Wi-Fi-Based Single-Link Zero-Effort Cross-Domain Gesture Recognition. <em>IEEE Access</em> (Q1), 2026.</li></ol>
+<div class="pub-kind">会议报告</div><ol class="pubs"><li><strong>T. Dai</strong>, E.M. Khorov, Wi-Fi-based few-shot open-set gesture recognition. <strong>ICCT-2026</strong> — 第十届信息、控制与通信技术国际会议, Astrakhan, Russia.</li><li><strong>T. Dai</strong>, E.M. Khorov, Система распознавания жестов на основе сигналов беспроводных сетей. <strong>EN&amp;T-2024</strong> — 工程与电信国际会议（Engineering &amp; Telecommunications）, Dolgoprudny, Russia.</li></ol>
+</section>
+<section class="section" data-section="education">
+  <h2>教育背景</h2>
+  <div class="entry">
+    <div class="entry-head">
+    <div class="t ">博士</div>
+    <div class="d">2023 – 2027（预计）</div>
+  </div>
+    <div class="org">俄罗斯高等经济大学（HSE）</div>
+    <div class="fact">通信系统、网络与设备</div><div class="fact">毕业课题：开发在广义跨域任务中的基于 Wi-Fi 信号的手势识别方法</div><div class="fact">导师：Evgeny Khorov（问题传输研究所（IITP RAS）无线网络实验室主任）</div><div class="fact">俄罗斯政府奖学金</div>
+  </div>
+<div class="entry">
+    <div class="entry-head">
+    <div class="t ">硕士（优秀毕业生）</div>
+    <div class="d">2021 – 2023</div>
+  </div>
+    <div class="org">莫斯科物理技术学院（MIPT）</div>
+    <div class="fact">应用数学与物理 · GPA 5.0/5.0</div><div class="fact">毕业课题：数字预失真的系数量化方法开发</div><div class="fact">MIPT-华为联合培养项目（工作在中射频（IRF Lab）框架下完成，导师为内部专家）</div><div class="fact">俄罗斯政府奖学金 · 中国留学基金委（CSC）奖学金</div>
+  </div>
+<div class="entry">
+    <div class="entry-head">
+    <div class="t ">学士</div>
+    <div class="d">2016 – 2021</div>
+  </div>
+    <div class="org">莫斯科物理技术学院（MIPT）</div>
+    <div class="fact">应用数学与物理，研究方向：固体物理（磁弹波） · GPA 4.6/5.0</div><div class="fact">毕业课题：不规则结构中的磁弹波</div><div class="fact">导师：Evgeny Khorov（无线电与电子工程研究所（IRE RAS）所长）</div><div class="fact">俄罗斯政府奖学金</div>
+  </div>
+<details class="courses"><summary>硕士核心课程</summary>
+    <div class="body">
+    <div class="course-group">
+      <div class="course-name">信号处理与通信</div>
+      <div class="course-list">自适应滤波理论 · 数字信号处理基础 · 数字信号处理实验 · 基于 OFDM 的数字传输系统 · 现代无线通信系统空间信号处理 · 光纤通信链路数字信号处理</div>
+    </div>
+    <div class="course-group">
+      <div class="course-name">无线电电子与 SDR</div>
+      <div class="course-list">软件定义无线电（SDR） · 无线电电子设备电磁兼容性 · 无线电电子系统</div>
+    </div></div>
+  </details>
+</section>
+<section class="section" data-section="competition">
+  <h2>竞赛获奖</h2>
+  <div class="comp-item">
+    <div class="n">华为杯无线通信算法大赛 一等奖<span class="yr">2025</span></div>
+    <div class="dt">面向大规模 MIMO 信道矩阵 SVD 分解的轻量化神经网络设计与实现；双人团队技术负责人，主导模型轻量化与训练方法构建；历经三轮赛程，从百余支队伍中获一等奖（总排名第二）。</div>
+  </div>
+<div class="comp-item">
+    <div class="n">HSE 博士公费配额选拔 优胜者<span class="yr">2023</span></div>
+    <div class="dt">全校范围博士课题竞赛，研究计划经专家评审与答辩，获全额公费博士录取资格。</div>
+  </div>
+</section>
+<footer class="footer"><span>戴瞳华 · 无线感知 / 研究版</span><span>更新于 2026-10</span></footer>
+</main>
+</body>
+</html>
