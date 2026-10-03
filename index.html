@@ -117,6 +117,12 @@ ul.bul ul.bul.sub{margin:5px 0 2px 6px;gap:3px}
 ul.bul ul.bul.sub li{font-size:12.5px;color:var(--muted);padding-left:12px}
 ul.bul ul.bul.sub li::before{left:0;top:.6em;width:3px;height:3px}
 ul.bul ul.bul.sub li strong{font-weight:600}
+/* 深子级（style:"sub2"，如四条"首个…"）：在轻子级之上再缩进一格、字号再小一号。
+   这条曾被我漏写 —— 于是四个"首个…"落回通用 ul.bul li 的 14px，看起来和正文一样大、
+   完全看不出层级（用户反馈"不显示"就是这个）。选择器要带上 .sub2，别再漏。 */
+ul.bul ul.bul.sub.sub2{margin:3px 0 0 10px;gap:2px}
+ul.bul ul.bul.sub.sub2 li{font-size:11.5px;color:var(--faint);padding-left:11px}
+ul.bul ul.bul.sub.sub2 li::before{left:0;top:.58em;width:3px;height:3px}
 .award{margin-top:10px;font-size:13px;color:var(--muted)}
 .award b{color:var(--ink);font-weight:600}
 .link-inline{font-size:13px;color:var(--accent)}
