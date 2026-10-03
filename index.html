@@ -303,21 +303,37 @@ body.static .footer{margin-top:34px}
         return '<div class="skill-group"><div class="skill-area">'+esc(pick(g.area))+'</div><div class="skill-items">'+chips+'</div></div>';
       }).join('');
     },
+    // 要点列表：数据是显式树（children 里的 style: sub / sub2），递归渲染。
+    // 曾经这里只扫 b.bullets 一层 —— 数据改成嵌套结构后，导师行与四条"首个…"
+    // 在**动态主页**上全部消失（静态页正常，所以只看静态页的自检没发现）。
+    bulletsHtml: function(b, v, minLevel){
+      var self = this;
+      var render = function(list, depth){
+        var kids = (list||[]).filter(function(x){ return keep(x, v, minLevel); });
+        if(!kids.length) return '';
+        var cls = depth >= 2 ? 'bul sub sub2' : depth === 1 ? 'bul sub' : 'bul';
+        return '<ul class="'+cls+'">'+kids.map(function(x){
+          return '<li>'+rich(pick(x.text))+(x.children ? render(x.children, depth+1) : '')+'</li>';
+        }).join('')+'</ul>';
+      };
+      void self;
+      return render(b.bullets, 0);
+    },
     job: function(n,v){
       var link = n.link ? ' · <a class="link-inline" href="'+esc(n.link.href)+'" target="_blank" rel="noopener">'+esc(pick(n.link.label))+'</a>' : '';
       var blocks = (n.blocks||[]).filter(function(b){ return keep(b, v, n.level); }).map(function(b){
         var h = b.heading ? '<div class="block-h">'+rich(pick(b.heading))+'</div>' : '';
-        var bs = (b.bullets||[]).filter(function(x){ return keep(x, v, n.level); });
-        var l = bs.length ? '<ul class="bul">'+bs.map(function(x){return '<li>'+rich(pick(x.text))+'</li>';}).join('')+'</ul>' : '';
+        var l = this.bulletsHtml(b, v, n.level);
         return (h||l) ? '<div class="block">'+h+l+'</div>' : '';
-      }).join('');
+      }, this).join('');
       var aw = n.awards ? '<div class="award"><b>Awards:</b> '+esc(pick(n.awards))+'</div>' : '';
       return '<div class="entry">'+head(pick(n.title),pick(n.date))+'<div class="org">'+esc(pick(n.org))+link+'</div>'+blocks+aw+'</div>';
     },
     research: function(n,v){
+      var self = this;
       var blocks = (n.blocks||[]).map(function(b){
-        var bs = (b.bullets||[]).filter(function(x){ return keep(x, v, n.level); });
-        return bs.length ? '<div class="block"><ul class="bul">'+bs.map(function(x){return '<li>'+rich(pick(x.text))+'</li>';}).join('')+'</ul></div>' : '';
+        var l = self.bulletsHtml(b, v, n.level);
+        return l ? '<div class="block">'+l+'</div>' : '';
       }).join('');
       return '<div class="entry">'+head(pick(n.title),pick(n.date))+'<div class="org">'+esc(pick(n.org))+'</div>'+blocks+'</div>';
     },
