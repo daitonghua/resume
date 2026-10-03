@@ -55,13 +55,8 @@ select{
 }
 select:hover{border-color:var(--accent)}
 .bar-right{margin-left:auto;display:flex;gap:10px;align-items:center;flex:0 0 auto}
-.btn-print{
-  font:inherit;font-size:12.5px;font-weight:600;color:#fff;background:var(--accent);
-  border:0;border-radius:8px;padding:6px 14px;cursor:pointer;transition:.16s;
-}
-.btn-print:hover{filter:brightness(1.08)}
-.variant-note{font-size:12px;color:var(--muted)}
-.variant-note b{color:var(--ink);font-weight:600}
+/* 这里原本是版本下拉（select）、打印按钮与版本目标提示的样式，
+   三者随内部版本控件一起删除：页面上不再有版本切换与打印入口。 */
 
 /* ---------- 页头 ---------- */
 .hdr{display:flex;gap:26px;align-items:center;padding:8px 0 26px;border-bottom:1px solid var(--line)}
@@ -205,21 +200,22 @@ body.static .footer{margin-top:34px}
   h1,h2{break-after:avoid}
 }
 
-/* PDF 下载入口：一条克制的按钮，放在页脚之后 */
+/* PDF 下载入口：放在顶栏右侧（原打印按钮的位置） */
 .dl-slot{display:flex;align-items:center}
 .dl{
-  display:inline-flex;align-items:center;gap:8px;
+  display:inline-flex;align-items:center;gap:7px;
   font-size:13px;font-weight:600;color:var(--accent);
   background:var(--accent-soft);border:1px solid transparent;border-radius:9px;
   padding:6px 13px;transition:.16s;white-space:nowrap;
 }
 .dl:hover{background:var(--card);border-color:var(--accent);text-decoration:none}
-.dl svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dl svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
 @media print{
+  /* 顶栏打印时整体隐藏（.bar{display:none}），无需单独处理下载按钮 */
 }
 
-/* build ecf357c178d2 */
+/* build 4b8a5934774a */
 </style>
 </head>
 <body>
@@ -236,7 +232,6 @@ body.static .footer{margin-top:34px}
     <nav class="bar-nav" id="sectionNav" aria-label="栏目导航"></nav>
     <div class="bar-right">
       <div id="docDownload" class="dl-slot"></div>
-      <span class="variant-note" id="variantNote"></span>
     </div>
   </div>
 </div>
@@ -250,15 +245,10 @@ body.static .footer{margin-top:34px}
   var D = JSON.parse(document.getElementById('resume-data').textContent);
   var lang = 'zh', variant = 'full';
   var q = new URLSearchParams(location.search);
-  // DEV 模式：?dev=1 时额外显示"版本"切换与版本目标提示（内部信息）。
-  // 语言切换对所有访客可见，不受 DEV 限制。
-  var DEV = q.get('dev') === '1';
   document.getElementById('bar').hidden = false;
-  if (DEV) if (document.getElementById('verGroup')) document.getElementById('verGroup').hidden = false;
-  // 非 dev 时忽略版本参数，保证线上永远是完整版；语言参数则正常生效
+  // 语言参数生效（可分享"英文版直链"）；对外只有完整版，不再有版本切换
   var wantLang = q.get('lang');
-  if (wantLang && D.payload.variants.full.langs.indexOf(wantLang) >= 0) lang = wantLang;
-  if (DEV && q.get('v') && D.payload.variants[q.get('v')]) variant = q.get('v');
+  if (wantLang && ['zh','en','ru'].indexOf(wantLang) >= 0) lang = wantLang;
 
   var TM = {"zh":"#b91c1c","en":"#2563eb","ru":"#047857"};
 
@@ -367,7 +357,8 @@ body.static .footer{margin-top:34px}
   }
 
   function render(){
-    var V = D.payload.variants[variant];
+    // 对外只有完整版：直接取 payload 里唯一的版本配置（不再有版本切换）
+    var V = D.payload.variants.full;
     // 先按当前版本可用语言解析出真正生效的语言，否则 ?lang=zh&v=en-1p 会取到空切片
     if(!V.byLang[lang]) lang = V.langs[0];
     var slice = V.byLang[lang];
@@ -403,38 +394,26 @@ body.static .footer{margin-top:34px}
         esc(pdfSign) + '</a>';
     }
     var up = {zh:'更新于 ',en:'Updated ',ru:'Обновлено '}[lang] + "2026-10";
-    // 页脚：默认（上线）只显示更新日期，**不显示内部版本名**（如"AI 芯片量化版"）。
-    // 只有 ?dev=1 时才把版本名带上，方便我自己区分。
-    var footLeft = DEV ? esc(pick(D.payload.variants[variant].label)||'') : '';
-    document.getElementById('docFoot').innerHTML = '<footer class="footer"><span>'+footLeft+'</span><span>'+esc(up)+'</span></footer>';
+    // 页脚只显示更新日期：页面不出现任何版本名（内部裁剪版只存在于构建工具的 PDF 里）
+    document.getElementById('docFoot').innerHTML = '<footer class="footer"><span></span><span>'+esc(up)+'</span></footer>';
 
-    // 语言按钮的高亮/禁用：对所有访客都要更新（语言切换是上线功能）。
-    // 非 dev 时版本固定为 full，其 langs 是 zh/en/ru，三语都可选。
+    // 语言按钮的高亮：三语都是完整内容，都对访客可用
+    // 语言按钮对所有访客都可用：对外只有完整版，三语都是完整内容
     document.querySelectorAll('#langSeg button').forEach(function(b){
-      var ok = D.payload.variants[variant].langs.indexOf(b.dataset.lang) >= 0;
+      var ok = ['zh','en','ru'].indexOf(b.dataset.lang) >= 0;
       b.disabled = !ok; b.style.opacity = ok ? 1 : .35;
       b.classList.toggle('on', b.dataset.lang === lang);
     });
-    if (DEV) {
-      if (document.getElementById('variantSel')) document.getElementById('variantSel').value = variant;
-      var tgt = D.payload.variants[variant].targets;
-      document.getElementById('variantNote').innerHTML = tgt ? ('<b>'+(lang==='zh'?'目标':'Target')+'</b> '+esc(pick(tgt))) : '';
-      // URL 只在 dev 下带 dev/v 参数；这类内部参数不该出现在访客地址栏
-      var u = new URL(location.href); u.searchParams.set('dev','1'); u.searchParams.set('lang',lang); u.searchParams.set('v',variant);
-      history.replaceState(null,'',u);
-    } else {
-      // 上线：只同步语言参数（可分享"英文版直链"），不写入任何内部版本参数
-      var u2 = new URL(location.href);
-      u2.searchParams.delete('dev'); u2.searchParams.delete('v');
-      if (lang === 'zh') u2.searchParams.delete('lang'); else u2.searchParams.set('lang', lang);
-      history.replaceState(null,'',u2);
-    }
+    // URL 只同步语言参数（可分享"英文版直链"）
+    var u2 = new URL(location.href);
+    if (lang === 'zh') u2.searchParams.delete('lang'); else u2.searchParams.set('lang', lang);
+    history.replaceState(null,'',u2);
   }
 
   document.getElementById('langSeg').addEventListener('click', function(e){
     if(e.target.tagName === 'BUTTON' && !e.target.disabled){ lang = e.target.dataset.lang; render(); }
   });
-  if (document.getElementById('variantSel')) document.getElementById('variantSel').addEventListener('change', function(e){ variant = e.target.value; render(); });
+  // 语言切换是顶栏唯一的交互（下载按钮是普通链接，无需绑定）
 
   // 滚动高亮 + 点击跳转。
   // 位置判定必须用 getBoundingClientRect()，不能用 offsetTop ——
