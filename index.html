@@ -261,7 +261,11 @@ body.static .footer{margin-top:34px}
   function rich(s){return esc(s).replace(/&lt;(\/?)(strong|em|b|i)&gt;/g,'<$1$2>')
     .replace(/&lt;a href=&quot;([^&]*)&quot;&gt;/g,'<a href="$1" target="_blank" rel="noopener">')
     .replace(/&lt;\/a&gt;/g,'</a>');}
-  function pick(v){return (v && typeof v === 'object') ? v[lang] : v;}
+  // pick：取语言对象里当前语言的值。
+  // 必须先排除数组！课程表已经是**单一数组**结构（item.list = {zh:[],en:[],ru:[]}），
+  // 而数组也是 "object"，旧写法 v[lang] 对数组恒为 undefined ——
+  // 后果是课程块渲染成空的 <details>（点开什么都没有）。这个 bug 就是这么来的。
+  function pick(v){ return (v && typeof v === 'object' && !Array.isArray(v)) ? v[lang] : v; }
 
   /* --- 与 src/render.mjs 同构的渲染器（同一份数据、同一套规则） --- */
   var R = {
@@ -310,12 +314,15 @@ body.static .footer{margin-top:34px}
     },
     courses: function(n){
       // 两级：总名成行加粗，分名缩进（与 render.mjs / pdf.mjs 保持同一结构）
-      var groups = pick(n.items) || [];
+      // 注意 items 是**单一数组**（[{name:{…}, list:{zh:[],en:[],ru:[]}}]），不是语言对象，
+      // 所以这里不能写成 pick(n.items) 之外的任何"按语言取值"的假设。
+      var groups = Array.isArray(n.items) ? n.items : [];
       var body = groups.map(function(grp){
         var list = (pick(grp.list) || []).map(esc).join(' · ');
         return '<div class="course-group"><div class="course-name">'+esc(pick(grp.name))+
                '</div><div class="course-list">'+list+'</div></div>';
       }).join('');
+      if (!body) return '';   // 没内容就不要输出空的 <details>（点开会什么都没有）
       return '<details class="courses"><summary>'+esc(pick(n.title))+'</summary><div class="body">'+body+'</div></details>';
     },
     competition: function(n){
